@@ -123,76 +123,135 @@ $(document).ready(function () {
 
 
 <div id="loading-and-preprocessing-the-data" class="section level2">
-<h2>Loading and preprocessing the data</h2>
-<p>setwd(“D:/OneDrive/Public/Data Science/Course 5/RepData_PeerAssessment1”) url &lt;- “<a href="https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip">https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip</a>” destfile &lt;- “dataset.zip” download.file(url, destfile) unzip(destfile) activity &lt;- read.csv(“activity.csv”, sep = “,”)</p>
-<p>names(activity) ## [1] “steps” “date” “interval” str(activity) ##‘data.frame’: 17568 obs. of 3 variables: ## $ steps : int NA NA NA NA NA NA NA NA NA NA … ## $ date : Factor w/ 61 levels “2012-10-01”,“2012-10-02”,..: 1 1 1 1 1 1 1 1 1 1 … ## $ interval: int 0 5 10 15 20 25 30 35 40 45 …</p>
-<p>summary(activity)</p>
+<h2>1. Loading and preprocessing the data</h2>
+<p>Set the working directory , download the data and unzip into the folder</p>
+<pre><code>setwd(&quot;D:/OneDrive/Public/Data Science/Course 5/RepData_PeerAssessment1&quot;)
+url &lt;- &quot;https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip&quot;
+destfile &lt;- &quot;dataset.zip&quot;
+download.file(url, destfile)
+unzip(destfile)</code></pre>
+<p>Read the csv file</p>
+<pre><code>activity &lt;- read.csv(&quot;activity.csv&quot;, sep = &quot;,&quot;)</code></pre>
+<p>The variable names and the structureand get the names of an object</p>
+<pre><code>names(activity)
+</code></pre>
+<pre><code>## [1] &quot;steps&quot;    &quot;date&quot;     &quot;interval&quot;
+</code></pre>
+<pre><code>str(activity)
+</code></pre>
+<pre><code>## 'data.frame':    17568 obs. of  3 variables:
+##  $ steps   : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ date    : chr  &quot;2012-10-01&quot; &quot;2012-10-01&quot; &quot;2012-10-01&quot; &quot;2012-10-01&quot; ...
+##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...</code></pre>
+<pre><code>summary(activity)</code></pre>
+<pre><code>head(activity[which(!is.na(activity$steps)), ])</code></pre>
 </div>
-<div id="steps-date-interval" class="section level2">
-<h2>steps date interval</h2>
-</div>
-<div id="min.-0.00-2012-10-01-288-min.-0.0" class="section level2">
-<h2>Min. : 0.00 2012-10-01: 288 Min. : 0.0</h2>
-</div>
-<div id="st-qu.-0.00-2012-10-02-288-1st-qu.-588.8" class="section level2">
-<h2>1st Qu.: 0.00 2012-10-02: 288 1st Qu.: 588.8</h2>
-</div>
-<div id="median-0.00-2012-10-03-288-median-1177.5" class="section level2">
-<h2>Median : 0.00 2012-10-03: 288 Median :1177.5</h2>
-</div>
-<div id="mean-37.38-2012-10-04-288-mean-1177.5" class="section level2">
-<h2>Mean : 37.38 2012-10-04: 288 Mean :1177.5</h2>
-</div>
-<div id="rd-qu.-12.00-2012-10-05-288-3rd-qu.1766.2" class="section level2">
-<h2>3rd Qu.: 12.00 2012-10-05: 288 3rd Qu.:1766.2</h2>
-</div>
-<div id="max.-806.00-2012-10-06-288-max.-2355.0" class="section level2">
-<h2>Max. :806.00 2012-10-06: 288 Max. :2355.0</h2>
-</div>
-<div id="nas-2304-other-15840" class="section level2">
-<h2>NA’s :2304 (Other) :15840</h2>
-<p>head(activity[which(!is.na(activity$steps)), ])</p>
-</div>
-<div id="what-is-mean-total-number-of-steps-taken-per-day" class="section level2">
-<h2>What is mean total number of steps taken per day?</h2>
-<p>library(reshape2) activity_melt &lt;- melt(activity[which(!is.na(activity$steps)), ], id.vars = c(“date”, “interval”)) head(activity_melt) steps_sum &lt;- dcast(activity_melt, date ~ variable, sum) head(steps_sum)</p>
-<p>summary(steps_sum$steps) # Summary of data</p>
-</div>
-<div id="histogram-of-total-number-of-steps-taken-sans-na-rows.-also-showing" class="section level2">
-<h2>Histogram of total number of steps taken sans NA rows. Also, showing</h2>
-</div>
-<div id="mean-and-median-of-the-data." class="section level2">
-<h2>mean and median of the data.</h2>
-<p>hist(steps_sum<span class="math inline">\(steps, main = &quot;Histogram of total steps taken per day&quot;,  xlab = &quot;Total steps per day&quot;, ylab = &quot;Number of days&quot;,  breaks = 10, col = &quot;steel blue&quot;) abline(v = mean(steps_sum\)</span>steps), lty = 1, lwd = 2, col = “red”) abline(v = median(steps_sum$steps), lty = 2, lwd = 2, col = “black”) legend(x = “topright”, c(“Mean”, “Median”), col = c(“red”, “black”), lty = c(1, 2), lwd = c(2, 2))</p>
+<div id="mean-of-total-number-of-step-taken-per-day-over-all-days" class="section level2">
+<h2>2. Mean of “total number of step taken per day” over all days</h2>
+<p>Group the number of steps by date and interval</p>
+<pre><code>library(reshape2)
+activity_melt &lt;- melt(activity[which(!is.na(activity$steps)), ], id.vars = c(&quot;date&quot;, &quot;interval&quot;))
+head(activity_melt)
+steps_sum &lt;- dcast(activity_melt, date ~ variable, sum)
+head(steps_sum)</code></pre>
+<p>Total number of steps per day</p>
+<pre><code>summary(steps_sum$steps) # Summary of data</code></pre>
+<p>Histogram of total number of steps taken sans NA rows. Also, showing mean and median of the data.</p>
+<pre><code>hist(steps_sum$steps, main = &quot;Histogram of total steps taken per day&quot;, 
+     xlab = &quot;Total steps per day&quot;, ylab = &quot;Number of days&quot;, 
+     breaks = 10, col = &quot;steel blue&quot;)
+abline(v = mean(steps_sum$steps), lty = 1, lwd = 2, col = &quot;red&quot;)
+abline(v = median(steps_sum$steps), lty = 2, lwd = 2, col = &quot;black&quot;)
+legend(x = &quot;topright&quot;, c(&quot;Mean&quot;, &quot;Median&quot;), col = c(&quot;red&quot;, &quot;black&quot;), 
+       lty = c(1, 2), lwd = c(2, 2))</code></pre>
 </div>
 <div id="what-is-the-average-daily-activity-pattern" class="section level2">
-<h2>What is the average daily activity pattern?</h2>
-<p>stepsmeaninterval &lt;- dcast(activity_melt, interval ~ variable, mean, na.rm = TRUE) head(stepsmeaninterval) plot(stepsmeaninterval<span class="math inline">\(interval, stepsmeaninterval\)</span>steps, ty = “l”, xlab = “time interval”, ylab = “Average steps”, main = “Average steps taken over all days vs time interval”) maxsteps_interval &lt;- stepsmeaninterval<span class="math inline">\(interval[which.max(stepsmeaninterval\)</span>steps)] maxsteps_interval</p>
+<h2>3. What is the average daily activity pattern?</h2>
+<p>Make a time series plot</p>
+<pre><code>stepsmeaninterval &lt;- dcast(activity_melt, interval ~ variable, 
+                           mean, na.rm = TRUE)
+head(stepsmeaninterval)
+plot(stepsmeaninterval$interval, stepsmeaninterval$steps, ty = &quot;l&quot;,
+     xlab = &quot;time interval&quot;, ylab = &quot;Average steps&quot;, 
+     main = &quot;Average steps taken over all days vs \n time interval&quot;)</code></pre>
+<p>Time interval during which the maximum number of steps</p>
+<pre><code>maxsteps_interval &lt;- 
+        stepsmeaninterval$interval[which.max(stepsmeaninterval$steps)]
+maxsteps_interval</code></pre>
 </div>
 <div id="imputing-missing-values" class="section level2">
-<h2>Imputing missing values</h2>
-<p>activity2 &lt;- split(activity, activity<span class="math inline">\(interval) activity2 &lt;- lapply(activity2, function(x) {  x\)</span>steps[which(is.na(x$steps))] &lt;- mean(x$steps, na.rm = TRUE) return(x) }) activity2 &lt;- do.call(“rbind”, activity2) row.names(activity2) &lt;- NULL</p>
-<p>activity2 &lt;- split(activity2, activity2<span class="math inline">\(date) df &lt;- lapply(activity2, function(x) {  x\)</span>steps[which(is.na(x$steps))] &lt;- mean(x$steps, na.rm = TRUE) return(x) }) activity2 &lt;- do.call(“rbind”, activity2) row.names(activity2) &lt;- NULL head(activity2)</p>
-<p>library(reshape2) activity_melt2 &lt;- melt(activity2, id.vars = c(“date”, “interval”)) steps_sum &lt;- dcast(activity_melt2, date ~ variable, sum, na.rm = TRUE) head(steps_sum)</p>
-</div>
-<div id="histogram-of-total-number-of-steps-taken-with-imputed-missing-values" class="section level2">
-<h2>Histogram of total number of steps taken with imputed missing values</h2>
-<p>hist(steps_sum<span class="math inline">\(steps, main = &quot;Histogram of total steps taken per day&quot;,  xlab = &quot;Total steps per day&quot;, ylab = &quot;Number of days&quot;,  breaks = 10, col = &quot;steel blue&quot;) abline(v = mean(steps_sum\)</span>steps), lty = 1, lwd = 2, col = “red”) abline(v = median(steps_sum$steps), lty = 2, lwd = 2, col = “black”) legend(x = “topright”, c(“Mean”, “Median”), col = c(“red”, “black”), lty = c(2, 1), lwd = c(2, 2))</p>
-</div>
-<div id="number-of-rows-with-na-values" class="section level2">
-<h2>Number of rows with NA values</h2>
-<p>sum(is.na(activity<span class="math inline">\(steps)) sum(is.na(activity\)</span>steps))*100/nrow(activity) # Percentage of rows</p>
+<h2>4. Imputing missing values</h2>
+<p>Replace the missing data for a day by the time average over all other days</p>
+<pre><code>activity2 &lt;- split(activity, activity$interval)
+activity2 &lt;- lapply(activity2, function(x) {
+        x$steps[which(is.na(x$steps))] &lt;- mean(x$steps, na.rm = TRUE)
+        return(x)
+})
+activity2 &lt;- do.call(&quot;rbind&quot;, activity2)
+row.names(activity2) &lt;- NULL
+
+activity2 &lt;- split(activity2, activity2$date)
+df &lt;- lapply(activity2, function(x) {
+        x$steps[which(is.na(x$steps))] &lt;- mean(x$steps, na.rm = TRUE)
+        return(x)
+})
+activity2 &lt;- do.call(&quot;rbind&quot;, activity2)
+row.names(activity2) &lt;- NULL
+head(activity2)</code></pre>
+<p>Refutes the intervals being disjoint</p>
+<pre><code>library(reshape2)
+activity_melt2 &lt;- melt(activity2, id.vars = c(&quot;date&quot;, &quot;interval&quot;))
+steps_sum &lt;- dcast(activity_melt2, date ~ variable, sum, na.rm = TRUE)
+head(steps_sum)</code></pre>
+<p>Histogram of total number of steps taken with imputed missing values</p>
+<pre><code>hist(steps_sum$steps, main = &quot;Histogram of total steps taken per day&quot;, 
+     xlab = &quot;Total steps per day&quot;, ylab = &quot;Number of days&quot;, 
+     breaks = 10, col = &quot;steel blue&quot;)
+abline(v = mean(steps_sum$steps), lty = 1, lwd = 2, col = &quot;red&quot;)
+abline(v = median(steps_sum$steps), lty = 2, lwd = 2, col = &quot;black&quot;)
+legend(x = &quot;topright&quot;, c(&quot;Mean&quot;, &quot;Median&quot;), col = c(&quot;red&quot;, &quot;black&quot;), 
+       lty = c(2, 1), lwd = c(2, 2))</code></pre>
+<p>Number of rows with NA values</p>
+<pre><code>sum(is.na(activity$steps))
+sum(is.na(activity$steps))*100/nrow(activity) # Percentage of rows</code></pre>
 </div>
 <div id="are-there-differences-in-activity-patterns-between-weekdays-and-weekends" class="section level2">
-<h2>Are there differences in activity patterns between weekdays and weekends?</h2>
-<p>library(lubridate) weekends &lt;- which(weekdays(as.Date(activity2<span class="math inline">\(date)) == &quot;Saturday&quot; |  weekdays(as.Date(activity2\)</span>date)) == “Sunday”) weekdays &lt;- which(weekdays(as.Date(activity2<span class="math inline">\(date)) != &quot;Saturday&quot; &amp;  weekdays(as.Date(activity2\)</span>date)) != “Sunday”) temp &lt;- c(rep(“a”, length(activity2))) temp[weekends] &lt;- “weekend” temp[weekdays] &lt;- “weekday” length(temp) activity2 &lt;- cbind(activity2, temp) head(activity2) names(activity2)[4] &lt;- “day”</p>
-<p>activity2split &lt;- split(activity2, activity2<span class="math inline">\(day) stepsmean_interval &lt;- lapply(activity2split, function(x) {  temp &lt;- aggregate(x\)</span>steps, list(x$interval), mean) names(temp) &lt;- c(“interval”, “steps”) return(temp) })</p>
-</div>
-<div id="unsplit-stepsmean_interval" class="section level2">
-<h2>Unsplit stepsmean_interval</h2>
-<p>stepsmean_interval &lt;- do.call(“rbind”, stepsmean_interval) weekdays &lt;- grep(“weekday” ,row.names(stepsmean_interval)) weekends &lt;- grep(“weekend” ,row.names(stepsmean_interval)) temp &lt;- c(rep(“a”, length(stepsmean_interval$steps))) temp[weekdays] &lt;- “weekdays” temp[weekends] &lt;- “weekends” names(temp) &lt;- “day” stepsmean_interval &lt;- cbind(stepsmean_interval, temp) row.names(stepsmean_interval) &lt;- NULL</p>
-<p>head(stepsmean_interval)</p>
-<p>library(ggplot2) ggplot(stepsmean_interval, aes(interval, steps)) + geom_line() + facet_grid(temp ~ .)</p>
+<h2>5. Are there differences in activity patterns between weekdays and weekends?</h2>
+<p>Create a new column for the date is a weekday or weekend.</p>
+<pre><code>library(lubridate)
+weekends &lt;- which(weekdays(as.Date(activity2$date)) == &quot;Saturday&quot; |
+                          weekdays(as.Date(activity2$date)) == &quot;Sunday&quot;)
+weekdays &lt;- which(weekdays(as.Date(activity2$date)) != &quot;Saturday&quot; &amp;
+                          weekdays(as.Date(activity2$date)) != &quot;Sunday&quot;)
+temp &lt;- c(rep(&quot;a&quot;, length(activity2)))
+temp[weekends] &lt;- &quot;weekend&quot;
+temp[weekdays] &lt;- &quot;weekday&quot;
+length(temp)
+activity2 &lt;- cbind(activity2, temp)
+head(activity2)
+names(activity2)[4] &lt;- &quot;day&quot;</code></pre>
+<p>Steps taken over each interval averaged across weekday days and weekend days</p>
+<pre><code>activity2split &lt;- split(activity2, activity2$day)
+stepsmean_interval &lt;- lapply(activity2split, function(x) {
+        temp &lt;- aggregate(x$steps, list(x$interval), mean)
+        names(temp) &lt;- c(&quot;interval&quot;, &quot;steps&quot;)
+        return(temp)
+})</code></pre>
+<p>Unsplit stepsmean_interval</p>
+<pre><code>stepsmean_interval &lt;- do.call(&quot;rbind&quot;, stepsmean_interval)
+weekdays &lt;- grep(&quot;weekday&quot; ,row.names(stepsmean_interval))
+weekends &lt;- grep(&quot;weekend&quot; ,row.names(stepsmean_interval))
+temp &lt;- c(rep(&quot;a&quot;, length(stepsmean_interval$steps)))
+temp[weekdays] &lt;- &quot;weekdays&quot;
+temp[weekends] &lt;- &quot;weekends&quot;
+names(temp) &lt;- &quot;day&quot;
+stepsmean_interval &lt;- cbind(stepsmean_interval, temp)
+row.names(stepsmean_interval) &lt;- NULL</code></pre>
+<p>The mean number of steps taken over the weekdays and weekends.</p>
+<pre><code>head(stepsmean_interval)</code></pre>
+<p>Plot the graph</p>
+<pre><code>library(ggplot2)
+ggplot(stepsmean_interval, aes(interval, steps)) + geom_line() + facet_grid(temp ~ .) </code></pre>
 </div>
 
 
