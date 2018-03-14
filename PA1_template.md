@@ -35,8 +35,6 @@ names(activity)
 ## [1] "steps"    "date"     "interval"
 ```
 
-
-
 ```r
 str(activity)
 ```
@@ -138,7 +136,7 @@ legend(x = "topright", c("Mean", "Median"), col = c("red", "black"),
        lty = c(1, 2), lwd = c(2, 2))
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-64-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
 
 ## 3. What is the average daily activity pattern?
 
@@ -167,7 +165,7 @@ plot(stepsmeaninterval$interval, stepsmeaninterval$steps, ty = "l",
      main = "Average steps taken over all days vs \n time interval")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-65-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
 Time interval during which the maximum number of steps
 
 
@@ -246,7 +244,7 @@ legend(x = "topright", c("Mean", "Median"), col = c("red", "black"),
        lty = c(2, 1), lwd = c(2, 2))
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-69-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
 Number of rows with NA values
 
@@ -351,4 +349,4 @@ library(ggplot2)
 ggplot(stepsmean_interval, aes(interval, steps)) + geom_line() + facet_grid(temp ~ .) 
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-73-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-15-1.png)<!-- -->

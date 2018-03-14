@@ -28,11 +28,6 @@ The variable names and the structure and get the names of an object
 
 ```{r}
 names(activity)
-
-```
-
-
-```{r}
 str(activity)
 
 ```
